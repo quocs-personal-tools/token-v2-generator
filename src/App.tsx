@@ -134,119 +134,142 @@ export function App() {
     window.setTimeout(() => setCopied(false), 1200);
   }
 
+  function renderHeader() {
+    return (
+      <div className="mb-6">
+        <div className="flex flex-wrap items-center gap-2">
+          <h1 className="text-2xl font-semibold leading-tight">
+            Token v2 generator
+          </h1>
+          <Badge variant="secondary">v{appVersion}</Badge>
+        </div>
+        <p className="text-muted-foreground text-sm">
+          Fill the inputs on the left to generate a token.
+        </p>
+      </div>
+    );
+  }
+
+  function renderInputsCard() {
+    return (
+      <Card className="h-full">
+        <CardHeader>
+          <CardTitle>Inputs</CardTitle>
+          <CardDescription>
+            Provide values used to generate the token.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <ClearableField
+            kind="textarea"
+            id="query-params"
+            label="Query params"
+            value={queryParamsText}
+            onChange={setQueryParamsText}
+            onClear={() => setQueryParamsText("")}
+            placeholder="Example: a=1&b=2"
+            textareaClassName="min-h-24"
+          />
+
+          <ClearableField
+            kind="textarea"
+            id="body-data"
+            label="Body data"
+            value={bodyDataText}
+            onChange={setBodyDataText}
+            onClear={() => setBodyDataText("")}
+            placeholder='Example: {"userId":123,"role":"admin"}'
+            textareaClassName="min-h-24"
+          />
+
+          <ClearableField
+            kind="input"
+            id="token"
+            label="Token"
+            value={token}
+            onChange={setToken}
+            onClear={() => setToken("")}
+            placeholder="Paste your token"
+          />
+
+          <ClearableField
+            kind="input"
+            id="api-share-key"
+            label="API share key"
+            value={apiShareKey}
+            onChange={setApiShareKey}
+            onClear={() => setApiShareKey("")}
+            placeholder="Enter API share key"
+          />
+        </CardContent>
+      </Card>
+    );
+  }
+
+  function renderGeneratedTokenCardDescription() {
+    if (isGenerating) return "Generating…";
+    if (generatedToken) return "Ready to copy.";
+    return "Enter Token + API share key to generate.";
+  }
+
+  function renderCopyButtonContent() {
+    if (copied) {
+      return (
+        <>
+          <CopyCheck /> Copied
+        </>
+      );
+    }
+
+    return (
+      <>
+        <Copy /> Copy
+      </>
+    );
+  }
+
+  function renderGeneratedTokenCard() {
+    return (
+      <Card className="h-full">
+        <CardHeader>
+          <CardTitle>Generated token</CardTitle>
+          <CardDescription>
+            {renderGeneratedTokenCardDescription()}
+          </CardDescription>
+          <CardAction>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onCopy}
+              disabled={!generatedToken}
+            >
+              {renderCopyButtonContent()}
+            </Button>
+          </CardAction>
+        </CardHeader>
+
+        <CardContent className="flex h-full flex-col gap-2">
+          <Textarea
+            value={generatedToken}
+            readOnly
+            placeholder="Your generated token will appear here"
+            className="min-h-60 flex-1 font-mono"
+          />
+          {error ? <p className="text-sm text-destructive">{error}</p> : null}
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <div className="min-h-dvh bg-background text-foreground">
       <div className="w-full px-4 py-6 sm:px-6 lg:px-8">
-        <div className="mb-6">
-          <div className="flex flex-wrap items-center gap-2">
-            <h1 className="text-2xl font-semibold leading-tight">
-              Token v2 generator
-            </h1>
-            <Badge variant="secondary">v{appVersion}</Badge>
-          </div>
-          <p className="text-muted-foreground text-sm">
-            Fill the inputs on the left to generate a token.
-          </p>
-        </div>
-
+        {renderHeader()}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          <Card className="h-full">
-            <CardHeader>
-              <CardTitle>Inputs</CardTitle>
-              <CardDescription>
-                Provide values used to generate the token.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <ClearableField
-                kind="textarea"
-                id="query-params"
-                label="Query params"
-                value={queryParamsText}
-                onChange={setQueryParamsText}
-                onClear={() => setQueryParamsText("")}
-                placeholder="Example: a=1&b=2"
-                textareaClassName="min-h-24"
-              />
-
-              <ClearableField
-                kind="textarea"
-                id="body-data"
-                label="Body data"
-                value={bodyDataText}
-                onChange={setBodyDataText}
-                onClear={() => setBodyDataText("")}
-                placeholder='Example: {"userId":123,"role":"admin"}'
-                textareaClassName="min-h-24"
-              />
-
-              <ClearableField
-                kind="input"
-                id="token"
-                label="Token"
-                value={token}
-                onChange={setToken}
-                onClear={() => setToken("")}
-                placeholder="Paste your token"
-              />
-
-              <ClearableField
-                kind="input"
-                id="api-share-key"
-                label="API share key"
-                value={apiShareKey}
-                onChange={setApiShareKey}
-                onClear={() => setApiShareKey("")}
-                placeholder="Enter API share key"
-              />
-            </CardContent>
-          </Card>
-
-          <Card className="h-full">
-            <CardHeader>
-              <CardTitle>Generated token</CardTitle>
-              <CardDescription>
-                {isGenerating
-                  ? "Generating…"
-                  : generatedToken
-                  ? "Ready to copy."
-                  : "Enter Token + API share key to generate."}
-              </CardDescription>
-              <CardAction>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={onCopy}
-                  disabled={!generatedToken}
-                >
-                  {copied ? (
-                    <>
-                      <CopyCheck /> Copied
-                    </>
-                  ) : (
-                    <>
-                      <Copy /> Copy
-                    </>
-                  )}
-                </Button>
-              </CardAction>
-            </CardHeader>
-
-            <CardContent className="flex h-full flex-col gap-2">
-              <Textarea
-                value={generatedToken}
-                readOnly
-                placeholder="Your generated token will appear here"
-                className="min-h-60 flex-1 font-mono"
-              />
-              {error ? (
-                <p className="text-sm text-destructive">{error}</p>
-              ) : null}
-            </CardContent>
-          </Card>
+          {renderInputsCard()}
+          {renderGeneratedTokenCard()}
         </div>
       </div>
-
       {/* For showing analytics on vercel project dashboard */}
       <Analytics />
     </div>
