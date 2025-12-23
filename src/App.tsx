@@ -1,9 +1,12 @@
 import { Analytics } from "@vercel/analytics/react";
 
+import { version as appVersion } from "../package.json";
+
 import { useEffect, useMemo, useState } from "react";
 import { Copy, CopyCheck } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardAction,
@@ -135,9 +138,12 @@ export function App() {
     <div className="min-h-dvh bg-background text-foreground">
       <div className="w-full px-4 py-6 sm:px-6 lg:px-8">
         <div className="mb-6">
-          <h1 className="text-2xl font-semibold leading-tight">
-            Token v2 generator
-          </h1>
+          <div className="flex flex-wrap items-center gap-2">
+            <h1 className="text-2xl font-semibold leading-tight">
+              Token v2 generator
+            </h1>
+            <Badge variant="secondary">v{appVersion}</Badge>
+          </div>
           <p className="text-muted-foreground text-sm">
             Fill the inputs on the left to generate a token.
           </p>
