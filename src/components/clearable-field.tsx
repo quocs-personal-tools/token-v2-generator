@@ -1,4 +1,4 @@
-import { X } from "lucide-react";
+import { Asterisk, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 type ClearableFieldBaseProps = {
   id: string;
   label: string;
+  required?: boolean;
   value: string;
   onChange: (value: string) => void;
   onClear: () => void;
@@ -28,12 +29,20 @@ export type ClearableFieldProps =
   | ClearableTextareaFieldProps;
 
 export function ClearableField(props: ClearableFieldProps) {
-  const { id, label, value, onChange, onClear, placeholder } = props;
+  const { id, label, value, onChange, onClear, placeholder, required } = props;
   const hasValue = value.length > 0;
 
   return (
     <div className="space-y-2">
-      <Label htmlFor={id}>{label}</Label>
+      <Label htmlFor={id} className="inline-flex items-center gap-1">
+        {label}
+        {required && (
+          <Asterisk
+            className="text-destructive h-3.5 w-3.5"
+            aria-hidden="true"
+          />
+        )}
+      </Label>
       <div className="relative">
         {props.kind === "textarea" ? (
           <Textarea
@@ -50,11 +59,13 @@ export function ClearableField(props: ClearableFieldProps) {
             onChange={(e) => onChange(e.target.value)}
             placeholder={placeholder}
             autoComplete="off"
+            aria-required={required}
+            required={required}
             className="pr-10"
           />
         )}
 
-        {hasValue ? (
+        {hasValue && (
           <Button
             type="button"
             variant="ghost"
@@ -69,7 +80,7 @@ export function ClearableField(props: ClearableFieldProps) {
           >
             <X />
           </Button>
-        ) : null}
+        )}
       </div>
     </div>
   );

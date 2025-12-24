@@ -186,6 +186,7 @@ export function App() {
             kind="input"
             id="token"
             label="Token"
+            required
             value={token}
             onChange={setToken}
             onClear={() => setToken("")}
@@ -196,6 +197,7 @@ export function App() {
             kind="input"
             id="api-share-key"
             label="API share key"
+            required
             value={apiShareKey}
             onChange={setApiShareKey}
             onClear={() => setApiShareKey("")}
